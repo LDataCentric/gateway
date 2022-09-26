@@ -30,6 +30,8 @@ from controller.embedding import manager as embedding_manager
 from util.notification import create_notification
 from submodules.s3 import controller as s3
 import os
+import umap
+import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -564,6 +566,7 @@ def import_file(
     if data.get(
         "embedding_tensors_data",
     ):
+
         # if tensor data exists use that otherwise recreate embedding
         embedding_ids = {}
         for embedding_item in data.get(
@@ -588,9 +591,18 @@ def import_file(
                 )
             ] = embedding_object.id
 
-        for embedding_tensor_item in data.get(
+        trans = umap.UMAP(n_neighbors=10,
+            min_dist=0.1,
+            n_components=2,
+            metric="euclidean",
+            random_state=42)
+
+        embedding_vector = np.array([row.get('data') for row in data.get("embedding_tensors_data")])
+        data_reduced = trans.fit_transform(embedding_vector)
+
+        for index, embedding_tensor_item in enumerate(data.get(
             "embedding_tensors_data",
-        ):
+        )):
             embedding.create_tensor(
                 project_id=project_id,
                 record_id=record_ids.get(
@@ -606,6 +618,7 @@ def import_file(
                 data=embedding_tensor_item.get(
                     "data",
                 ),
+                data_reduced=data_reduced[index].tolist(),
             )
 
     weak_supervision_ids = {}
