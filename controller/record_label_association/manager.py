@@ -27,6 +27,12 @@ def get_last_annotated_record_id(
     return record_label_association.get_latest(project_id, top_n)
 
 
+def get_record_label_association_by_source_type(
+    project_id: str, source_type: str
+) -> List[RecordLabelAssociation]:
+    return record_label_association.get_by_source_type(project_id, source_type)
+
+
 def is_any_record_manually_labeled(project_id: str):
     return record_label_association.is_any_record_manually_labeled(project_id)
 

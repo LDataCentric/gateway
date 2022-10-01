@@ -14,6 +14,12 @@ class RecordLabelAssociationQuery(graphene.ObjectType):
         top_n=graphene.Int(required=True),
     )
 
+    record_label_association_by_source_type = graphene.Field(
+        graphene.List(RecordLabelAssociation),
+        project_id=graphene.ID(required=True),
+        source_type=graphene.String(required=True),
+    )
+
     is_any_record_manually_labeled = graphene.Field(
         graphene.Boolean,
         project_id=graphene.ID(required=True),
@@ -25,6 +31,15 @@ class RecordLabelAssociationQuery(graphene.ObjectType):
         auth.check_demo_access(info)
         auth.check_project_access(info, project_id)
         return manager.get_last_annotated_record_id(project_id, top_n)
+
+    def resolve_record_label_association_by_source_type(
+        self, info, project_id: str, source_type: str
+    ) -> List[RecordLabelAssociation]:
+        auth.check_demo_access(info)
+        auth.check_project_access(info, project_id)
+        return manager.get_record_label_association_by_source_type(
+            project_id, source_type
+        )
 
     def resolve_is_any_record_manually_labeled(
         self, info, project_id: str
