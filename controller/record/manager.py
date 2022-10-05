@@ -79,6 +79,9 @@ def get_records_by_extended_search(
 def delete_record(project_id: str, record_id: str) -> None:
     record.delete(project_id, record_id, with_commit=True)
 
+def delete_records(project_id: str, record_ids: List[str]) -> None:
+    record.delete_records(project_id, record_ids, with_commit=True)
+
 
 def delete_all_records(project_id: str) -> None:
     record.delete_all(project_id, with_commit=True)
