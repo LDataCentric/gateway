@@ -2,10 +2,12 @@ import logging
 import graphene
 from api.project import ProjectDetails
 from api.transfer import (
+    AssociationsImport,
     FileExport,
+    JSONImport,
     KnowledgeBaseExport,
     Notify,
-    PrepareImport,
+    PrepareFileImport,
     UploadTask,
 )
 from middleware.database_session import DatabaseSessionHandler
@@ -15,14 +17,11 @@ from starlette.middleware import Middleware
 from starlette.routing import Route
 
 from graphql_api import schema
-from submodules.model.models import Base
-from submodules.model.session import engine
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-Base.metadata.create_all(bind=engine)
 routes = [
     Route(
         "/graphql/",
@@ -36,8 +35,10 @@ routes = [
         "/project/{project_id:str}/knowledge_base/{knowledge_base_id:str}",
         KnowledgeBaseExport,
     ),
+    Route("/project/{project_id:str}/associations", AssociationsImport),
     Route("/project/{project_id:str}/export", FileExport),
-    Route("/project/{project_id:str}/import", PrepareImport),
+    Route("/project/{project_id:str}/import_file", PrepareFileImport),
+    Route("/project/{project_id:str}/import_json", JSONImport),
     Route("/project/{project_id:str}/import/task/{task_id:str}", UploadTask),
 ]
 

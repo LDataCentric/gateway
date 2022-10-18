@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Optional, Dict
+from typing import Any, Optional, Dict
 import zipfile
 from controller.transfer.knowledge_base_transfer_manager import (
     import_knowledge_base_file,
@@ -9,6 +9,7 @@ from controller.transfer.project_transfer_manager import (
     import_file_by_task,
     get_project_export_dump,
 )
+from controller.upload_task import manager as upload_task_manager
 from controller.transfer.record_transfer_manager import import_file
 from controller.attribute import manager as attribute_manager
 from submodules.model import UploadTask, enums
@@ -21,7 +22,7 @@ from submodules.model.business_objects import (
     knowledge_base,
 )
 from submodules.model.business_objects import general, project
-from controller.upload_task import manager as task_manager
+from controller.upload_task import manager as upload_task_manager
 from submodules.s3 import controller as s3
 import pandas as pd
 from datetime import datetime
@@ -36,16 +37,44 @@ def get_upload_credentials_and_id(
     file_type: str,
     file_import_options: str,
 ):
-    task = task_manager.create_upload_task(
+    task = upload_task_manager.create_upload_task(
         str(user_id), project_id, file_name, file_type, file_import_options
     )
     org_id = organization.get_id_by_project_id(project_id)
     return s3.get_upload_credentials_and_id(org_id, project_id + "/" + str(task.id))
 
 
-def import_records(project_id: str, task: UploadTask) -> None:
+def import_records_from_file(project_id: str, task: UploadTask) -> None:
     import_file(project_id, task)
     __check_and_add_running_id(project_id, str(task.user_id))
+
+
+def import_records_from_json(
+    project_id: str,
+    user_id,
+    record_data: Dict[str, Any],
+    request_uuid: str,
+    is_last: bool,
+) -> None:
+    request_df = pd.DataFrame(record_data)
+    file_path = "tmp_" + request_uuid + ".csv_SCALE"
+    if not os.path.exists(file_path):
+        request_df.to_csv(file_path, index=False)
+    else:
+        request_df.to_csv(file_path, mode="a", header=False, index=False)
+
+    if is_last:
+        organization_id = organization.get_id_by_project_id(project_id)
+        upload_task = upload_task_manager.create_upload_task(
+            str(user_id),
+            str(project_id),
+            f"{file_path}",
+            "records",
+            "",
+        )
+        upload_path = f"{project_id}/{str(upload_task.id)}/{file_path}"
+        s3.upload_object(organization_id, upload_path, file_path)
+        os.remove(file_path)
 
 
 def __check_and_add_running_id(project_id: str, user_id: str):
@@ -91,8 +120,10 @@ def export_records(
         return sql_df.to_json(orient="records")
 
 
-def export_project(project_id: str, export_options: Dict[str, bool]) -> str:
-    return get_project_export_dump(project_id, export_options)
+def export_project(
+    project_id: str, user_id: str, export_options: Dict[str, bool]
+) -> str:
+    return get_project_export_dump(project_id, user_id, export_options)
 
 
 def export_knowledge_base(project_id: str, base_id: str) -> str:
@@ -116,13 +147,15 @@ def export_knowledge_base(project_id: str, base_id: str) -> str:
     )
 
 
-def prepare_project_export(project_id: str, export_options: Dict[str, bool]) -> bool:
+def prepare_project_export(
+    project_id: str, user_id: str, export_options: Dict[str, bool]
+) -> bool:
     org_id = organization.get_id_by_project_id(project_id)
     objects = s3.get_bucket_objects(org_id, project_id + "/download/project_export_")
     for o in objects:
         s3.delete_object(org_id, o)
 
-    data = get_project_export_dump(project_id, export_options)
+    data = get_project_export_dump(project_id, user_id, export_options)
     file_name_base = "project_export_" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     file_name_local = file_name_base + ".zip"
     file_name_download = project_id + "/download/" + file_name_local

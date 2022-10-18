@@ -2,6 +2,7 @@ import ast
 import json
 import logging
 import time
+import re
 from typing import Dict, Any, List, Optional
 from zipfile import ZipFile
 
@@ -22,8 +23,10 @@ from submodules.model.business_objects import (
     user,
     knowledge_term,
     weak_supervision,
+    comments as comment,
 )
 from submodules.model.enums import NotificationType
+from controller.labeling_access_link import manager as link_manager
 from util import notification
 from util.decorator import param_throttle
 from controller.embedding import manager as embedding_manager
@@ -105,7 +108,11 @@ def import_sample_project(
             "Once the project has been initialized, you'll be redirected into it."
         )
         project_item = project.create(
-            organization_id, project_name, project_description, user_id, status = enums.ProjectStatus.INIT_SAMPLE_PROJECT
+            organization_id,
+            project_name,
+            project_description,
+            user_id,
+            status=enums.ProjectStatus.INIT_SAMPLE_PROJECT,
         )
         create_notification(
             NotificationType.IMPORT_SAMPLE_PROJECT,
@@ -113,7 +120,7 @@ def import_sample_project(
             project_item.id,
         )
         notification.send_organization_update(
-            project_item.id, "project_update", is_global=True
+            project_item.id, f"project_update:{str(project_item.id)}", is_global=True
         )
         data = extract_first_zip_data(file_name)
         import_file(project_item.id, user_id, data)
@@ -125,14 +132,14 @@ def import_sample_project(
         )
 
         notification.send_organization_update(
-            project_item.id, "project_update", is_global=True
+            project_item.id, f"project_update:{str(project_item.id)}", is_global=True
         )
         return project_item
 
 
 def import_file(
     project_id: str,
-    user_id: str,
+    import_user_id: str,
     data: Dict[str, Dict[str, Any]],
     task_id: Optional[str] = None,
 ) -> None:
@@ -190,6 +197,18 @@ def import_file(
             ),
             relative_position=attribute_item.get(
                 "relative_position",
+            ),
+            user_created=attribute_item.get(
+                "user_created",
+            ),
+            state=attribute_item.get(
+                "state",
+            ),
+            logs=attribute_item.get(
+                "logs",
+            ),
+            source_code=attribute_item.get(
+                "source_code",
             ),
             project_id=project_id,
         )
@@ -303,6 +322,13 @@ def import_file(
                     information_source_object.source_code, attribute_ids_by_old_id
                 )
             )
+        if (
+            information_source_object.type
+            == enums.InformationSourceType.CROWD_LABELER.value
+        ):
+            information_source_object.source_code = json.dumps(
+                {"data_slice_id": None, "annotator_id": None, "access_link_id": None}
+            )
         information_source_ids[
             information_source_item.get(
                 "id",
@@ -375,6 +401,12 @@ def import_file(
     if data.get("weak_supervision_task_data"):
         for weak_supervision_item in data.get("weak_supervision_task_data"):
             created_by = weak_supervision_item.get("created_by")
+            if created_by not in used_user_ids:
+                used_user_ids.append(created_by)
+
+    if "comments" in data:
+        for comment_item in data.get("comments"):
+            created_by = comment_item.get("created_by")
             if created_by not in used_user_ids:
                 used_user_ids.append(created_by)
 
@@ -469,6 +501,9 @@ def import_file(
                     "id",
                 )
             ] = data_slice_object.id
+            link_manager.generate_data_slice_access_link(
+                project_id, import_user_id, data_slice_object.id, with_commit=False
+            )
 
     for information_source_payload_item in data.get(
         "information_source_payloads_data",
@@ -572,11 +607,21 @@ def import_file(
         for embedding_item in data.get(
             "embeddings_data",
         ):
+
+            attribute_id = embedding_item.get("attribute_id")
+            embedding_name = embedding_item.get("name")
+            if attribute_id:
+                attribute_id = attribute_ids_by_old_id.get(attribute_id)
+            else:
+                attribute_name = __get_attribute_name_from_embedding_name(
+                    embedding_name
+                )
+                attribute_id = attribute_ids_by_old_name[attribute_name]
+
             embedding_object = embedding.create(
                 project_id=project_id,
-                name=embedding_item.get(
-                    "name",
-                ),
+                attribute_id=attribute_id,
+                name=embedding_name,
                 state="FINISHED",
                 custom=embedding_item.get(
                     "custom",
@@ -756,6 +801,42 @@ def import_file(
                 "blacklisted",
             ),
         )
+    comment_data = data.get("comments")
+    if comment_data:
+        for comment_item in comment_data:
+            old_xfkey = comment_item.get("xfkey")
+            new_xfkey = None
+            xftype = comment_item.get("xftype")
+            if xftype == enums.CommentCategory.RECORD.value:
+                new_xfkey = record_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.LABELING_TASK.value:
+                new_xfkey = labeling_task_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.ATTRIBUTE.value:
+                new_xfkey = attribute_ids_by_old_id.get(old_xfkey)
+            elif xftype == enums.CommentCategory.LABEL.value:
+                new_xfkey = labeling_task_labels_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.DATA_SLICE.value:
+                new_xfkey = data_slice_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.EMBEDDING.value:
+                new_xfkey = embedding_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.HEURISTIC.value:
+                new_xfkey = information_source_ids.get(old_xfkey)
+            elif xftype == enums.CommentCategory.KNOWLEDGE_BASE.value:
+                new_xfkey = knowledge_base_ids.get(old_xfkey)
+            if not new_xfkey:
+                continue
+
+            comment.create(
+                xfkey=new_xfkey,
+                xftype=comment_item.get("xftype"),
+                comment=comment_item.get("comment"),
+                created_by=comment_item.get("created_by"),
+                project_id=project_id,
+                order_key=comment_item.get("order_key"),
+                is_markdown=comment_item.get("is_markdown"),
+                created_at=comment_item.get("created_at"),
+                is_private=comment_item.get("is_private"),
+            )
 
     general.commit()
 
@@ -765,7 +846,7 @@ def import_file(
     ):
         embedding_manager.create_embeddings_one_by_one(
             project_id,
-            user_id,
+            import_user_id,
             data.get(
                 "embeddings_data",
             ),
@@ -780,7 +861,9 @@ def import_file(
     logger.info(f"Finished import of project {project_id}")
 
 
-def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) -> str:
+def get_project_export_dump(
+    project_id: str, user_id: str, export_options: Dict[str, bool]
+) -> str:
     """Exports data of a project in JSON-String format. Queries all useful database entries and
     puts them in a format which again fits for import. For some entities database joins
     are useful, so there are vanilla SQL statements in execute-blocks.
@@ -807,10 +890,11 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
     knowledge_bases = []
     weak_supervision_task = []
     terms = []
+    comments = []
     # -------------------- READ OF ENTITIES BY SQLALCHEMY --------------------
 
     if "basic project data" in export_options:
-        attributes = attribute.get_all(project_id)
+        attributes = attribute.get_all(project_id, state_filter=[])
         labeling_tasks = labeling_task.get_all(project_id)
         labeling_task_labels = labeling_task_label.get_all(project_id)
         data_slices = data_slice.get_all(project_id)
@@ -852,6 +936,38 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
         knowledge_bases = knowledge_base.get_all(project_id)
         terms = knowledge_term.get_terms_by_project_id(project_id)
 
+    if "comment data" in export_options:
+        comments = []
+        comments += comment.get_by_all_by_category(
+            enums.CommentCategory.LABELING_TASK, user_id, None, project_id, True
+        )
+        comments += comment.get_by_all_by_category(
+            enums.CommentCategory.ATTRIBUTE, user_id, None, project_id, True
+        )
+        comments += comment.get_by_all_by_category(
+            enums.CommentCategory.LABEL, user_id, None, project_id, True
+        )
+        comments += comment.get_by_all_by_category(
+            enums.CommentCategory.DATA_SLICE, user_id, None, project_id, True
+        )
+        if "records" in export_options:
+            comments += comment.get_by_all_by_category(
+                enums.CommentCategory.RECORD, user_id, None, project_id, True
+            )
+            # only makes sense with records
+            if "embeddings" in export_options:
+                comments += comment.get_by_all_by_category(
+                    enums.CommentCategory.EMBEDDING, user_id, None, project_id, True
+                )
+        if "information sources" in export_options:
+            comments += comment.get_by_all_by_category(
+                enums.CommentCategory.HEURISTIC, user_id, None, project_id, True
+            )
+        if "knowledge bases" in export_options:
+            comments += comment.get_by_all_by_category(
+                enums.CommentCategory.KNOWLEDGE_BASE, user_id, None, project_id, True
+            )
+
     # -------------------- FORMATTING OF ENTITIES --------------------
     project_details_data = {
         "id": project_item.id,
@@ -877,6 +993,10 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
             "data_type": attribute_item.data_type,
             "is_primary_key": attribute_item.is_primary_key,
             "relative_position": attribute_item.relative_position,
+            "user_created": attribute_item.user_created,
+            "source_code": attribute_item.source_code,
+            "state": attribute_item.state,
+            "logs": attribute_item.logs,
         }
         for attribute_item in attributes
     ]
@@ -966,6 +1086,7 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
     embeddings_data = [
         {
             "id": str(embedding_item.id),
+            "attribute_id": str(embedding_item.attribute_id),
             "name": embedding_item.name,
             "custom": embedding_item.custom,
             "type": embedding_item.type,
@@ -998,6 +1119,9 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
         }
         for association_item in data_slice_record_association
     ]
+
+    # no need to format since db reteurns as json :)
+    comment_data = comments
 
     # -------------------- READ AND FORMATTING OF ENTITIES WITH SQL JOINS --------------------
 
@@ -1089,6 +1213,7 @@ def get_project_export_dump(project_id: str, export_options: Dict[str, bool]) ->
         "terms_data": terms_data,
         "data_slice_data": data_slice_data,
         "data_slice_record_association_data": data_slice_record_association_data,
+        "comments": comment_data,
     }
 
     logger.info(f"Finished export of project {project_id}")
@@ -1129,3 +1254,8 @@ def __replace_attribute_id_for_zero_shot_config(
             f'"attribute_id":"{attribute_ids[attribute_id]}"',
         )
     return source_code
+
+
+def __get_attribute_name_from_embedding_name(embedding_name: str) -> str:
+    regex = "^(.+)-(?:classification|extraction).*"
+    return re.match(regex, embedding_name).group(1)
