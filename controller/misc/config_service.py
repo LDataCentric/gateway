@@ -4,12 +4,13 @@ import json
 import time
 from util import daemon
 from util import service_requests
+import os
 
 __config = None
 
 # these are ment to be constant values since os variables will sooner or later be removed for adresses (and used with values from config-service)
-REQUEST_URL = "http://refinery-config:80/full_config"
-CHANGE_URL = "http://refinery-config:80/change_config"
+# REQUEST_URL = "http://refinery-config:80/full_config"
+# CHANGE_URL = "http://refinery-config:80/change_config"
 
 
 def __get_config() -> Dict[str, Any]:
@@ -21,7 +22,7 @@ def __get_config() -> Dict[str, Any]:
 
 
 def refresh_config():
-    response = requests.get(REQUEST_URL)
+    response = requests.get(f"{os.getenv('CONFIG')}/full_config")
     if response.status_code == 200:
         global __config
         __config = json.loads(json.loads(response.text))
@@ -57,4 +58,4 @@ def invalidate_after(sec: int) -> None:
 
 def change_config(dict_str: str) -> None:
     data = {"dict_string": dict_str}
-    service_requests.post_call_or_raise(CHANGE_URL, data)
+    service_requests.post_call_or_raise(f"{os.getenv('CONFIG')}/change_config", data)

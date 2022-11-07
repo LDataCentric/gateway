@@ -45,3 +45,18 @@ routes = [
 middleware = [Middleware(DatabaseSessionHandler)]
 
 app = Starlette(routes=routes, middleware=middleware)
+
+if __name__ == "__main__":
+    import uvicorn
+    import docker
+    import os
+
+    client = docker.from_env()
+
+    network = client.networks.get("bridge")
+    credential_ip = network.attrs["IPAM"]["Config"][0]["Gateway"]
+    cred_endpoint = f"http://{credential_ip}:7053"
+
+    os.environ["S3_ENDPOINT"] = cred_endpoint
+
+    uvicorn.run(app, host="0.0.0.0", port=7051)
