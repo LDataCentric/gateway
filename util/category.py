@@ -1,5 +1,6 @@
 from submodules.model import enums
 import pandas as pd
+import json
 
 
 def infer_category(file_name: str) -> str:
@@ -20,12 +21,33 @@ def infer_category_enum(df: pd.DataFrame, df_col: str) -> str:
     elif type_name == "bool":
         return enums.DataTypes.BOOLEAN.value
     elif type_name == "object":
-        sample = df[df_col].sample(10) if len(df) > 10 else df[df_col]
-        if sample.apply(lambda x: len(str(x).split()) > 4).sum() > 0:
-            # if any of 10 randomly sampled texts contains more than 4 whitespaces, it is most likely text
-            return enums.DataTypes.TEXT.value
-        else:
+        # Check if string is json
+        try:
+            df[df_col].apply(lambda x: json.loads(x.replace('\'', '"')))
+            return enums.DataTypes.TIMESERIES.value
+        except Exception:
+            pass
+
+        # Extract file extension
+        file_extension = df[df_col].apply(lambda x: x.split('.')[-1]).unique()
+
+        audio_inter = list(set(file_extension) & set(enums.FileExtensions.AUDIO_EXTENSIONS.value))
+        video_inter = list(set(file_extension) & set(enums.FileExtensions.VIDEO_EXTENSIONS.value))
+        image_inter = list(set(file_extension) & set(enums.FileExtensions.IMAGE_EXTENSIONS.value))
+
+        if len(audio_inter) > 0:
+            return enums.DataTypes.AUDIO.value
+        elif len(video_inter) > 0:
+            return enums.DataTypes.VIDEO.value
+        elif len(image_inter) > 0:
+            return enums.DataTypes.IMAGE.value
+
+        # Check uniqueness of values
+        if len(df[df_col].unique()) <= 20:
             return enums.DataTypes.CATEGORY.value
+
+        return enums.DataTypes.TEXT.value
+
     else:
         return enums.DataTypes.UNKNOWN.value
 
