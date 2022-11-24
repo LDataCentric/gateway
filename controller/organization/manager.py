@@ -67,12 +67,12 @@ def get_overview_stats(org_id: str) -> List[Dict[str, Union[str, int]]]:
 
 
 def can_create_local(org: bool = True) -> bool:
-    if config_service.get_config_value("is_managed"):
-        return False
-    existing_orgs = organization.get_all()
-    checkvalue = 0 if org else 1
-    if len(existing_orgs) != checkvalue:
-        return False
-    if user.get_count_assigned() != 0:
-        return False
+    # if config_service.get_config_value("is_managed"):
+    #     return False
+    # existing_orgs = organization.get_all()
+    # checkvalue = 0 if org else 1
+    # if len(existing_orgs) != checkvalue:
+    #     return False
+    # if user.get_count_assigned() != 0:
+    #     return False
     return True
