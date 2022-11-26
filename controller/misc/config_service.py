@@ -8,10 +8,6 @@ import os
 
 __config = None
 
-# these are ment to be constant values since os variables will sooner or later be removed for adresses (and used with values from config-service)
-# REQUEST_URL = "http://refinery-config:80/full_config"
-# CHANGE_URL = "http://refinery-config:80/change_config"
-
 
 def __get_config() -> Dict[str, Any]:
     global __config

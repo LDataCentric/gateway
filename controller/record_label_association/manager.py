@@ -121,7 +121,7 @@ def create_manual_classification_label(
         label_source_type,
         with_commit=True,
     )
-    record_label_association.create(
+    record_label_association_item = record_label_association.create(
         project_id=project_id,
         record_id=record_id,
         labeling_task_label_id=label_id,
@@ -154,7 +154,7 @@ def create_manual_classification_label(
             user_id,
             label_ids,
         )
-    return record_item
+    return record_item, record_label_association_item
 
 
 def __check_label_duplication_classification_and_react(

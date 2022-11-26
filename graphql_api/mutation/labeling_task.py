@@ -6,6 +6,7 @@ from controller.project import manager as project_manager
 from submodules.model import events
 from util import doc_ock, notification
 import graphene
+from graphql_api.types import LabelingTask
 
 
 class CreateLabelingTask(graphene.Mutation):
@@ -16,6 +17,7 @@ class CreateLabelingTask(graphene.Mutation):
         labeling_task_target_id = graphene.ID(required=False)
 
     ok = graphene.Boolean()
+    labelingTask = graphene.Field(lambda: LabelingTask)
 
     def mutate(
         self,
@@ -29,7 +31,7 @@ class CreateLabelingTask(graphene.Mutation):
         auth.check_project_access(info, project_id)
         user = auth.get_user_by_info(info)
         project = project_manager.get_project(project_id)
-        item = manager.create_labeling_task(
+        labelingTask = manager.create_labeling_task(
             project_id, labeling_task_name, labeling_task_type, labeling_task_target_id
         )
         doc_ock.post_event(
@@ -41,9 +43,9 @@ class CreateLabelingTask(graphene.Mutation):
             ),
         )
         notification.send_organization_update(
-            project_id, f"labeling_task_created:{str(item.id)}"
+            project_id, f"labeling_task_created:{str(labelingTask.id)}"
         )
-        return CreateLabelingTask(ok=True)
+        return CreateLabelingTask(ok=True, labelingTask=labelingTask)
 
 
 class UpdateLabelingTask(graphene.Mutation):

@@ -3,7 +3,7 @@ from typing import Optional, List
 import graphene
 
 from controller.auth import manager as auth
-from graphql_api.types import Record
+from graphql_api.types import Record, RecordLabelAssociation
 from submodules.model import enums, events
 from graphql_api import types
 from util import doc_ock, notification
@@ -22,6 +22,7 @@ class CreateClassificationAssociation(graphene.Mutation):
 
     ok = graphene.Boolean()
     record = graphene.Field(lambda: Record)
+    recordLabelAssociation = graphene.Field(lambda: RecordLabelAssociation)
 
     def mutate(
         self,
@@ -36,7 +37,7 @@ class CreateClassificationAssociation(graphene.Mutation):
         auth.check_demo_access(info)
         auth.check_project_access(info, project_id)
         user = auth.get_user_by_info(info)
-        record = manager.create_manual_classification_label(
+        record, recordLabelAssociation = manager.create_manual_classification_label(
             project_id,
             user.id,
             record_id,
@@ -57,7 +58,7 @@ class CreateClassificationAssociation(graphene.Mutation):
         )
         notification.send_organization_update(project_id, f"rla_created:{record_id}")
 
-        return CreateClassificationAssociation(ok=True, record=record)
+        return CreateClassificationAssociation(ok=True, record=record, recordLabelAssociation=recordLabelAssociation)
 
 
 class CreateExtractionAssociation(graphene.Mutation):
