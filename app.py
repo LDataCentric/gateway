@@ -50,6 +50,9 @@ if __name__ == "__main__":
     import uvicorn
     import docker
     import os
+    from dotenv import load_dotenv
+
+    load_dotenv(dotenv_path='.env')
 
     client = docker.from_env()
 

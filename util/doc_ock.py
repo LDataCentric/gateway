@@ -8,11 +8,9 @@ from util import daemon, service_requests
 from controller.auth import kratos
 from util.user_activity import add_user_activity_entry
 
-BASE_URI = os.getenv("DOC_OCK")
-
 
 def register_user(user: models.User):
-    url = f"{BASE_URI}/register_user/{user.id}"
+    url = f"{os.getenv('DOC_OCK')}/register_user/{user.id}"
     user_obj = kratos.resolve_user_name_by_id(user.id)
     user_data = {
         "first_name": user_obj["first"] if user_obj else "UNKNOWN User ID",
@@ -32,7 +30,7 @@ def __post_thread(
     user: models.User, event: events.Event, caller_dict: Dict[str, Union[str, int]]
 ):
     try:
-        url = f"{BASE_URI}/track/{user.id}/{event.event_name()}"
+        url = f"{os.getenv('DOC_OCK')}/track/{user.id}/{event.event_name()}"
         event.IsManaged = config_service.get_config_value("is_managed")
         add_user_activity_entry(
             str(user.id),

@@ -1,11 +1,9 @@
 import os
 from util import service_requests
 
-BASE_URI = os.getenv("NEURAL_SEARCH")
-
 
 def request_outlier_detection(project_id: str, embedding_id: str, limit: int):
-    url = f"{BASE_URI}/detect_outliers"
+    url = f"{os.getenv('NEURAL_SEARCH')}/detect_outliers"
     params = {
         "project_id": project_id,
         "embedding_id": embedding_id,

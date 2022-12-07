@@ -33,7 +33,6 @@ from controller.embedding import manager as embedding_manager
 from util.notification import create_notification
 from submodules.s3 import controller as s3
 import os
-import umap
 import numpy as np
 
 logging.basicConfig(level=logging.INFO)
@@ -88,17 +87,17 @@ def import_sample_project(
     user_id: str, organization_id: str, project_name: str
 ) -> Project:
     if project_name == "Clickbait - initial":
-        file_name = "sample_projects/clickbait_initial.zip"
+        file_name = "sample_projects/changed/clickbait_initial.zip"
     elif project_name == "Clickbait":
-        file_name = "sample_projects/clickbait.zip"
+        file_name = "sample_projects/changed/clickbait.zip"
     elif project_name == "AG News - initial":
-        file_name = "sample_projects/ag_news_initial.zip"
+        file_name = "sample_projects/changed/ag_news_initial.zip"
     elif project_name == "AG News":
-        file_name = "sample_projects/ag_news.zip"
+        file_name = "sample_projects/changed/ag_news.zip"
     elif project_name == "Conversational AI - initial":
-        file_name = "sample_projects/conversational_ai_initial.zip"
+        file_name = "sample_projects/changed/conversational_ai_initial.zip"
     elif project_name == "Conversational AI":
-        file_name = "sample_projects/conversational_ai.zip"
+        file_name = "sample_projects/changed/conversational_ai.zip"
     else:
         raise Exception("Unknown sample project")
     if not project_name:
@@ -228,6 +227,7 @@ def import_file(
     for labeling_task_item in data.get(
         "labeling_tasks_data",
     ):
+
         task_object = labeling_task.create(
             attribute_id=attribute_ids_by_old_id.get(
                 labeling_task_item.get(
@@ -636,15 +636,6 @@ def import_file(
                 )
             ] = embedding_object.id
 
-        trans = umap.UMAP(n_neighbors=10,
-            min_dist=0.1,
-            n_components=2,
-            metric="euclidean",
-            random_state=42)
-
-        embedding_vector = np.array([row.get('data') for row in data.get("embedding_tensors_data")])
-        data_reduced = trans.fit_transform(embedding_vector)
-
         for index, embedding_tensor_item in enumerate(data.get(
             "embedding_tensors_data",
         )):
@@ -663,7 +654,9 @@ def import_file(
                 data=embedding_tensor_item.get(
                     "data",
                 ),
-                data_reduced=data_reduced[index].tolist(),
+                data_reduced=embedding_tensor_item.get(
+                    "data_reduced",
+                ),
             )
 
     weak_supervision_ids = {}

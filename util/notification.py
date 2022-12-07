@@ -17,7 +17,6 @@ from util import doc_ock
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-WEBSOCKET_ENDPOINT = os.getenv("WS_NOTIFY_ENDPOINT")
 
 
 def send_organization_update(
@@ -27,7 +26,7 @@ def send_organization_update(
     organization_id: Optional[str] = None,
 ) -> None:
 
-    if not WEBSOCKET_ENDPOINT:
+    if not os.getenv("WS_NOTIFY_ENDPOINT"):
         print(
             "- WS_NOTIFY_ENDPOINT not set -- did you run the start script?", flush=True
         )
@@ -42,7 +41,7 @@ def send_organization_update(
         organization_id = str(project_item.organization_id)
 
     req = requests.post(
-        f"{WEBSOCKET_ENDPOINT}/notify",
+        f"{os.getenv('WS_NOTIFY_ENDPOINT')}/notify",
         json={
             "organization": organization_id,
             "message": message,

@@ -8,18 +8,16 @@ logging.basicConfig(level=logging.INFO)
 logger: logging.Logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-KRATOS_ADMIN_URL = os.getenv("KRATOS_ADMIN_URL")
-
 
 def get_userid_from_mail(user_mail: str) -> str:
-    for identity in requests.get(f"{KRATOS_ADMIN_URL}/identities").json():
+    for identity in requests.get(f"{os.getenv('KRATOS_ADMIN_URL')}/identities").json():
         if identity["traits"]["email"] == user_mail:
             return identity["id"]
     return None
 
 
 def resolve_user_mail_by_id(user_id: str) -> str:
-    res: Response = requests.get("{}/identities/{}".format(KRATOS_ADMIN_URL, user_id))
+    res: Response = requests.get(f"{os.getenv('KRATOS_ADMIN_URL')}/identities/{user_id}")
     data: Any = res.json()
     if res.status_code == 200 and data["traits"]:
         return data["traits"]["email"]
@@ -27,7 +25,7 @@ def resolve_user_mail_by_id(user_id: str) -> str:
 
 
 def resolve_user_name_by_id(user_id: str) -> str:
-    res: Response = requests.get("{}/identities/{}".format(KRATOS_ADMIN_URL, user_id))
+    res: Response = requests.get(f"{os.getenv('KRATOS_ADMIN_URL')}/identities/{user_id}")
     data: Any = res.json()
     if res.status_code == 200 and data["traits"]:
         return data["traits"]["name"]

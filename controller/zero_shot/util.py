@@ -2,11 +2,9 @@ import os
 from util import service_requests
 from typing import List, Any
 
-BASE_URI = os.getenv("ZERO_SHOT")
-
 
 def get_recommended_models() -> Any:
-    url = f"{BASE_URI}/recommend"
+    url = f"{os.getenv('ZERO_SHOT')}/recommend"
     return service_requests.get_call_or_raise(url)
 
 
@@ -14,7 +12,7 @@ def start_zero_shot_for_project(
     project_id: str,
     payload_id: str,
 ) -> Any:
-    url = f"{BASE_URI}/zero-shot/project"
+    url = f"{os.getenv('ZERO_SHOT')}/zero-shot/project"
     data = {
         "project_id": str(project_id),
         "payload_id": str(payload_id),
@@ -30,7 +28,7 @@ def get_zero_shot_text(
     run_individually: bool,
     label_names: List[str],
 ) -> Any:
-    url = f"{BASE_URI}/zero-shot/text"
+    url = f"{os.getenv('ZERO_SHOT')}/zero-shot/text"
     data = {
         "project_id": project_id,
         "information_source_id": information_source_id,
@@ -49,7 +47,7 @@ def get_zero_shot_sample_records(
 ) -> Any:
     if label_names == None:
         label_names = []
-    url = f"{BASE_URI}/zero-shot/sample-records"
+    url = f"{os.getenv('ZERO_SHOT')}/zero-shot/sample-records"
     data = {
         "project_id": project_id,
         "information_source_id": information_source_id,

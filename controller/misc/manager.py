@@ -7,8 +7,6 @@ import os
 
 from util import service_requests
 
-BASE_URI_UPDATER = os.getenv("UPDATER")
-
 
 def check_is_managed() -> bool:
     return config_service.get_config_value("is_managed")
@@ -49,12 +47,12 @@ def has_updates() -> List[ServiceVersionResult]:
 
 
 def __updater_version_overview() -> List[Dict[str, Any]]:
-    url = f"{BASE_URI_UPDATER}/version_overview"
+    url = f"{os.getenv('UPDATER')}/version_overview"
     return service_requests.get_call_or_raise(url)
 
 
 def __updater_has_updates() -> bool:
-    url = f"{BASE_URI_UPDATER}/has_updates"
+    url = f"{os.getenv('UPDATER')}/has_updates"
     return service_requests.get_call_or_raise(url)
 
 

@@ -33,6 +33,7 @@ from submodules.model.business_objects.labeling_task_label import (
     get_extraction_labels_manual,
     get_label_ids_by_names,
 )
+from controller.embedding import manager
 from submodules.model.business_objects.payload import get_max_token, get
 from submodules.model.business_objects.tokenization import (
     get_doc_bin_progress,
@@ -57,9 +58,6 @@ from controller.weak_supervision import weak_supervision_service as weak_supervi
 
 client = docker.from_env()
 __tz = pytz.timezone("Europe/Berlin")
-lf_exec_env_image = os.getenv("LF_EXEC_ENV_IMAGE")
-ml_exec_env_image = os.getenv("ML_EXEC_ENV_IMAGE")
-exec_env_network = os.getenv("LF_NETWORK")
 
 
 def create_payload(
@@ -150,6 +148,9 @@ def create_payload(
             embedding_id = __get_embedding_id_from_function(
                 user_id, project_id, information_source_item
             )
+
+            # Update embedding file in s3
+            manager.request_tensor_upload(project_id, embedding_id)
             embedding_file_name = f"embedding_tensors_{embedding_id}.csv.bz2"
             embedding_item = embedding.get(project_id, embedding_id)
             org_id = organization.get_id_by_project_id(project_id)
@@ -205,12 +206,12 @@ def create_payload(
             information_source_item.type
             == enums.InformationSourceType.LABELING_FUNCTION.value
         ):
-            image = lf_exec_env_image
+            image = os.getenv("LF_EXEC_ENV_IMAGE")
         elif (
             information_source_item.type
             == enums.InformationSourceType.ACTIVE_LEARNING.value
         ):
-            image = ml_exec_env_image
+            image = os.getenv("ML_EXEC_ENV_IMAGE")
         else:
             raise GraphQLError(
                 f"unknown information source type: {information_source_item.type}"
@@ -374,12 +375,13 @@ def run_container(
             project_item.tokenizer_blank,
             s3.create_file_upload_link(org_id, project_id + "/" + payload_id),
         ]
+
     container = client.containers.run(
         image=image,
         command=command,
         remove=True,
         detach=True,
-        network=exec_env_network,
+        network=os.getenv("LF_NETWORK"),
     )
 
     information_source_payload.logs = [
@@ -388,6 +390,11 @@ def run_container(
             stream=True, stdout=True, stderr=True, timestamps=True
         )
     ]
+
+    print("\nContainer logs:")
+    for log in information_source_payload.logs:
+        print(log)
+    print("")
 
     information_source_payload.finished_at = datetime.now()
     general.commit()
@@ -758,11 +765,11 @@ def run_labeling_function_exec_env(
     ]
 
     container = client.containers.run(
-        image=lf_exec_env_image,
+        image=os.getenv("LF_EXEC_ENV_IMAGE"),
         command=command,
         remove=True,
         detach=True,
-        network=exec_env_network,
+        network=os.getenv("LF_NETWORK"),
     )
 
     container_logs = [

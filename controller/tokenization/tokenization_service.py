@@ -2,11 +2,9 @@ import os
 
 from util import service_requests
 
-BASE_URI = os.getenv("TOKENIZER")
-
 
 def request_tokenize_record(project_id: str, record_id: str) -> None:
-    url = f"{BASE_URI}/tokenize_record"
+    url = f"{os.getenv('TOKENIZER')}/tokenize_record"
     data = {
         "project_id": str(project_id),
         "record_id": str(record_id),
@@ -16,7 +14,7 @@ def request_tokenize_record(project_id: str, record_id: str) -> None:
 
 
 def request_tokenize_project(project_id: str, user_id: str) -> None:
-    url = f"{BASE_URI}/tokenize_project"
+    url = f"{os.getenv('TOKENIZER')}/tokenize_project"
     data = {
         "project_id": str(project_id),
         "record_id": "",
@@ -29,7 +27,7 @@ def request_tokenize_project(project_id: str, user_id: str) -> None:
 def request_create_rats_entries(
     project_id: str, user_id: str, attribute_id: str
 ) -> None:
-    url = f"{BASE_URI}/create_rats"
+    url = f"{os.getenv('TOKENIZER')}/create_rats"
     data = {
         "project_id": str(project_id),
         "user_id": str(user_id),

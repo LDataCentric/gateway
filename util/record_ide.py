@@ -15,8 +15,6 @@ import uuid
 from util import daemon
 
 client = docker.from_env()
-image = os.getenv("RECORD_IDE_IMAGE")
-exec_env_network = os.getenv("LF_NETWORK")
 
 __containers_running = {}
 
@@ -50,9 +48,9 @@ def run_record_ide(
     container = client.containers.create(
         command=command,
         name=container_name,
-        image=image,
+        image=os.getenv("RECORD_IDE_IMAGE"),
         detach=True,
-        network=exec_env_network,
+        network=os.getenv("LF_NETWORK"),
         ulimits=[cpu_limit],
     )
     error = ""

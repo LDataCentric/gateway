@@ -9,8 +9,6 @@ from submodules.model.enums import DataTypes
 from submodules.s3 import controller as s3
 
 client = docker.from_env()
-image = os.getenv("AC_EXEC_ENV_IMAGE")
-exec_env_network = os.getenv("LF_NETWORK")
 
 
 def find_free_name(project_id: str) -> str:
@@ -92,11 +90,11 @@ def run_attribute_calculation_exec_env(
     ]
 
     container = client.containers.run(
-        image=image,
+        image=os.getenv("AC_EXEC_ENV_IMAGE"),
         command=command,
         remove=True,
         detach=True,
-        network=exec_env_network,
+        network=os.getenv("LF_NETWORK"),
     )
 
     logs = [
