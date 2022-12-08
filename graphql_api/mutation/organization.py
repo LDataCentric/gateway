@@ -10,6 +10,7 @@ from graphql_api.types import Organization
 from submodules.model import events
 from graphql_api import types
 from util import doc_ock
+from util import org_generator
 
 
 class AddUserToOrganization(graphene.Mutation):
@@ -67,13 +68,25 @@ class CreateOrganization(graphene.Mutation):
 
     organization = graphene.Field(lambda: Organization)
 
-    def mutate(self, info, name: str):
+    def mutate(self, info, name: str == None):
         if config_service.get_config_value("is_managed"):
             auth.check_admin_access(info)
         else:
             if not organization_manager.can_create_local():
                 auth.check_admin_access(info)
-        organization = organization_manager.create_organization(name)
+
+        if not name:
+            while True:
+                name = org_generator.generate()
+
+                try:
+                    organization = organization_manager.create_organization(name)
+                    break
+                except Exception:
+                    continue
+        else:
+            organization = organization_manager.create_organization(name)
+
         return CreateOrganization(organization=organization)
 
 
