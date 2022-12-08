@@ -19,7 +19,8 @@ class RecordQuery(graphene.ObjectType):
     )
 
     all_records = SQLAlchemyConnectionField(
-        Record, project_id=graphene.ID(required=True)
+        Record, project_id=graphene.ID(required=True),
+        sort_by=graphene.String(required=False)
     )
 
     records_by_static_slice = graphene.Field(
@@ -52,9 +53,9 @@ class RecordQuery(graphene.ObjectType):
         record_id=graphene.ID(required=True),
     )
 
-    def resolve_all_records(self, info, project_id: str) -> List[Record]:
+    def resolve_all_records(self, info, project_id: str, sort_by: str = None) -> List[Record]:
         auth.check_project_access(info, project_id)
-        return manager.get_all_records(project_id)
+        return manager.get_all_records(project_id, sort_by)
 
     def resolve_record_by_record_id(
         self, info, project_id: str, record_id: str

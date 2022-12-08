@@ -58,8 +58,8 @@ def get_records_by_composite_keys(
     )
 
 
-def get_all_records(project_id: str) -> List[Record]:
-    return record.get_all(project_id)
+def get_all_records(project_id: str, sort_by: str = None) -> List[Record]:
+    return record.get_all(project_id, sort_by)
 
 
 def get_records_by_static_slice(
