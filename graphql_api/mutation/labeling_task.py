@@ -3,7 +3,7 @@ from typing import Optional
 from controller.auth import manager as auth
 from controller.labeling_task import manager
 from controller.project import manager as project_manager
-from submodules.model import events
+from db import events
 from util import doc_ock, notification
 import graphene
 from graphql_api.types import LabelingTask

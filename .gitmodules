@@ -1,6 +1,0 @@
-[submodule "submodules/s3"]
-	path = submodules/s3
-	url = https://github.com/LDataCentric/refinery-submodule-s3.git
-[submodule "submodules/model"]
-	path = submodules/model
-	url = https://github.com/LDataCentric/refinery-submodule-model.git

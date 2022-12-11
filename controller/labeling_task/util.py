@@ -1,7 +1,7 @@
 from typing import Tuple, Dict, Any, List
 
-from submodules.model import Attribute
-from submodules.model.enums import LabelingTaskTarget
+from db import Attribute
+from db.enums import LabelingTaskTarget
 
 
 def resolve_attribute_information(attribute: Attribute) -> Tuple[str, str]:

@@ -3,7 +3,7 @@ import os
 import traceback
 from typing import Dict, Union
 from controller.misc import config_service
-from submodules.model import models, events
+from db import models, events
 from util import daemon, service_requests
 from controller.auth import kratos
 from util.user_activity import add_user_activity_entry

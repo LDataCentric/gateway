@@ -1,8 +1,8 @@
 from typing import List, Dict, Any
 
 from graphql_api.types import ExtendedSearch
-from submodules.model import Record, Attribute
-from submodules.model.business_objects import general, record, user_session
+from db import Record, Attribute
+from db.business_objects import general, record, user_session
 from service.search import search
 
 from controller.record import neural_search_connector

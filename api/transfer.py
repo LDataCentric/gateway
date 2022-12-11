@@ -4,8 +4,8 @@ import traceback
 from controller import organization
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import PlainTextResponse, JSONResponse
-from submodules.s3 import controller as s3
-from submodules.model.business_objects import organization
+from s3 import controller as s3
+from db.business_objects import organization
 
 from controller.transfer import manager as upload_manager
 from controller.upload_task import manager as upload_task_manager
@@ -14,11 +14,11 @@ from controller.transfer import manager as transfer_manager
 from controller.transfer import association_transfer_manager
 from controller.auth import manager as auth
 
-from submodules.model import enums, exceptions
+from db import enums, exceptions
 from util.notification import create_notification
-from submodules.model.enums import NotificationType
-from submodules.model.models import UploadTask
-from submodules.model.business_objects import general
+from db.enums import NotificationType
+from db.models import UploadTask
+from db.business_objects import general
 from util import notification
 from controller.tokenization import tokenization_service
 

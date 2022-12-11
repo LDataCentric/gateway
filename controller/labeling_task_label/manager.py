@@ -1,11 +1,11 @@
-from submodules.model import LabelingTaskLabel
-from submodules.model.business_objects import (
+from db import LabelingTaskLabel
+from db.business_objects import (
     labeling_task_label,
     labeling_task,
     general,
 )
 from controller.knowledge_base.util import create_knowledge_base_if_not_existing
-from submodules.model.enums import LabelingTaskType
+from db.enums import LabelingTaskType
 
 
 def get_label(project_id: str, label_id: str) -> LabelingTaskLabel:

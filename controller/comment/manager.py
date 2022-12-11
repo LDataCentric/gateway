@@ -1,10 +1,10 @@
 from typing import Any, Dict, List, Optional, Union
 from controller.auth import kratos
 from controller.auth import manager as user_manager
-from submodules.model import enums
-from submodules.model.models import CommentData, User
+from db import enums
+from db.models import CommentData, User
 
-from submodules.model.business_objects import comments
+from db.business_objects import comments
 
 
 def has_comments(

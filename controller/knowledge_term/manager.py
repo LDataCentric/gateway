@@ -1,12 +1,12 @@
 from typing import List
 
-from submodules.model import KnowledgeTerm, KnowledgeBase
-from submodules.model.enums import NotificationType
-from submodules.model.exceptions import (
+from db import KnowledgeTerm, KnowledgeBase
+from db.enums import NotificationType
+from db.exceptions import (
     EntityAlreadyExistsException,
     EntityNotFoundException,
 )
-from submodules.model.business_objects import general, knowledge_term, knowledge_base
+from db.business_objects import general, knowledge_term, knowledge_base
 from util.notification import create_notification
 
 

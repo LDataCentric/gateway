@@ -1,9 +1,9 @@
 import os
-from submodules.model import UploadTask, enums
-from submodules.model.business_objects import knowledge_term, organization
-from submodules.model.business_objects import general
+from db import UploadTask, enums
+from db.business_objects import knowledge_term, organization
+from db.business_objects import general
 from controller.upload_task import manager as upload_task_manager
-from submodules.s3 import controller as s3
+from s3 import controller as s3
 import pandas as pd
 
 

@@ -1,8 +1,8 @@
 import json
 from typing import List, Optional
 from controller.information_source.util import resolve_source_return_type
-from submodules.model import InformationSource, LabelingTask, enums
-from submodules.model.business_objects import (
+from db import InformationSource, LabelingTask, enums
+from db.business_objects import (
     general,
     labeling_task,
     information_source,

@@ -1,6 +1,6 @@
 import logging
 
-from submodules.model.enums import UploadStates
+from db.enums import UploadStates
 
 
 logging.basicConfig(level=logging.INFO)

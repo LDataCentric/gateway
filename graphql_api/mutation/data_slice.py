@@ -5,8 +5,8 @@ from exceptions.exceptions import TooManyRecordsForStaticSliceException
 import graphene
 from graphql import GraphQLError
 
-from submodules.model.business_objects import general
-from submodules.model.enums import NotificationType
+from db.business_objects import general
+from db.enums import NotificationType
 from util import notification
 from controller.data_slice import manager
 

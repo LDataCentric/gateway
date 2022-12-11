@@ -6,23 +6,23 @@ import traceback
 from controller.auth import manager as auth
 from controller.weak_supervision import manager as ws_manager
 from controller.payload import manager as pl_manager
-from submodules.model import events, enums
-from submodules.model.business_objects import (
+from db import events, enums
+from db.business_objects import (
     project,
     labeling_task,
     general,
     record_label_association,
     weak_supervision,
 )
-from submodules.model.business_objects.information_source import (
+from db.business_objects.information_source import (
     get_selected_information_sources,
     get_task_information_sources,
 )
-from submodules.model.business_objects.labeling_task import (
+from db.business_objects.labeling_task import (
     get,
     get_selected_labeling_task_names,
 )
-from submodules.model.enums import NotificationType
+from db.enums import NotificationType
 from util import daemon, doc_ock
 from util import notification
 from controller.weak_supervision.weak_supervision_service import (

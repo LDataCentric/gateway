@@ -3,7 +3,7 @@ from typing import List, Optional
 import graphene
 
 from graphene_sqlalchemy.fields import SQLAlchemyConnectionField
-from submodules.model.enums import LabelingTaskType
+from db.enums import LabelingTaskType
 from graphql_api.types import (
     HuddleData,
     InterAnnotatorMatrix,

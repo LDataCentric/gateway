@@ -6,7 +6,7 @@ import pandas as pd
 import controller.labeling_task.util
 import controller.transfer.util
 from controller.labeling_task.util import filter_existing_tasks_and_labels
-from submodules.model.business_objects import (
+from db.business_objects import (
     attribute,
     general,
     labeling_task_label,
@@ -20,8 +20,8 @@ from controller.user import manager as user_manager
 from controller.upload_task import manager as upload_task_manager
 from controller.tokenization import manager as token_manager
 from util import doc_ock
-from submodules.s3 import controller as s3
-from submodules.model import enums, events, UploadTask, Attribute
+from s3 import controller as s3
+from db import enums, events, UploadTask, Attribute
 from util import category
 from util import notification
 from controller.transfer.util import convert_to_record_dict

@@ -1,5 +1,5 @@
 from exceptions import exceptions
-from submodules.model import enums
+from db import enums
 
 __notification_data = {
     enums.NotificationType.IMPORT_STARTED.value: {

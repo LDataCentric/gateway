@@ -3,9 +3,9 @@ from util import doc_ock, notification
 
 import graphene
 from controller.misc import manager
-from submodules.model.business_objects import organization
+from db.business_objects import organization
 from controller.auth import manager as auth
-from submodules.model.events import *
+from db.events import *
 
 
 class UpdateConfig(graphene.Mutation):

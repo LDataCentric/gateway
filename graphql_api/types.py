@@ -6,8 +6,8 @@ import graphene
 from graphene.relay import Node
 from graphene.types.generic import GenericScalar
 from graphene_sqlalchemy.types import SQLAlchemyObjectType
-from submodules.model import enums
-from submodules.model.business_objects import (
+from db import enums
+from db.business_objects import (
     data_slice,
     knowledge_term,
     record_label_association,
@@ -18,7 +18,7 @@ from submodules.model.business_objects import (
     labeling_task,
     project,
 )
-from submodules.model import models
+from db import models
 from util import notification
 from controller.auth import kratos
 from util.inter_annotator.functions import (

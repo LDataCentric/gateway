@@ -8,7 +8,7 @@ from .search_enum import (
     SearchQueryTemplate,
     SearchTargetTables,
 )
-from submodules.model.enums import LabelSource
+from db.enums import LabelSource
 
 
 def build_search_condition_value(target: SearchOperators, value) -> str:

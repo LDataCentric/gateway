@@ -1,4 +1,4 @@
-from submodules.model.business_objects import knowledge_base, knowledge_term
+from db.business_objects import knowledge_base, knowledge_term
 
 
 def find_free_name(project_id: str, counter: int = 0) -> str:

@@ -5,7 +5,7 @@ import graphene
 from graphene_sqlalchemy.fields import SQLAlchemyConnectionField
 
 from graphql_api.types import Record, ExtendedSearch, TokenizedRecord
-from submodules.model.business_objects import record
+from db.business_objects import record
 from controller.record import manager
 from controller.auth import manager as auth
 from controller.tokenization import manager as tokenization_manager

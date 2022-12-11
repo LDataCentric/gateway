@@ -2,8 +2,8 @@ import logging
 import uuid
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from submodules.model.session import request_id_ctx_var
-from submodules.model.business_objects import general
+from db.session import request_id_ctx_var
+from db.business_objects import general
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

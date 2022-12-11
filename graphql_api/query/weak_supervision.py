@@ -2,7 +2,7 @@ import graphene
 
 from controller.auth import manager as auth
 from graphql_api.types import WeakSupervisionTask
-from submodules.model.business_objects import weak_supervision
+from db.business_objects import weak_supervision
 
 
 class WeakSupervisionQuery(graphene.ObjectType):

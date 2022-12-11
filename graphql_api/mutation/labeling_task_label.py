@@ -1,5 +1,5 @@
 from graphql_api.types import Label
-from submodules.model import events
+from db import events
 from controller.labeling_task_label import manager
 from controller.labeling_task import manager as task_manager
 import graphene

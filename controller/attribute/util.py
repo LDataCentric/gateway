@@ -4,9 +4,9 @@ import os
 import pytz
 import re
 from datetime import datetime
-from submodules.model.business_objects import attribute, record, project, tokenization
-from submodules.model.enums import DataTypes
-from submodules.s3 import controller as s3
+from db.business_objects import attribute, record, project, tokenization
+from db.enums import DataTypes
+from s3 import controller as s3
 
 client = docker.from_env()
 

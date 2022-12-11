@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
-from submodules.model import enums
-from submodules.model.models import LabelingAccessLink
-from submodules.model.business_objects import (
+from db import enums
+from db.models import LabelingAccessLink
+from db.business_objects import (
     general,
     labeling_access_link,
     information_source,

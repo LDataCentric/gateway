@@ -4,7 +4,7 @@ import graphene
 
 from controller.auth import manager as auth
 from graphql_api.types import Record, RecordLabelAssociation
-from submodules.model import enums, events
+from db import enums, events
 from graphql_api import types
 from util import doc_ock, notification
 from controller.record_label_association import manager

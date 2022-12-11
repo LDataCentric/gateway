@@ -12,18 +12,18 @@ from controller.transfer.project_transfer_manager import (
 from controller.upload_task import manager as upload_task_manager
 from controller.transfer.record_transfer_manager import import_file
 from controller.attribute import manager as attribute_manager
-from submodules.model import UploadTask, enums
-from submodules.model.business_objects.export import build_full_record_sql_export
-from submodules.model.business_objects import (
+from db import UploadTask, enums
+from db.business_objects.export import build_full_record_sql_export
+from db.business_objects import (
     attribute,
     organization,
     record_label_association,
     data_slice,
     knowledge_base,
 )
-from submodules.model.business_objects import general, project
+from db.business_objects import general, project
 from controller.upload_task import manager as upload_task_manager
-from submodules.s3 import controller as s3
+from s3 import controller as s3
 import pandas as pd
 from datetime import datetime
 from util import notification

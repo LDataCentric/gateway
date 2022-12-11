@@ -1,9 +1,9 @@
 from typing import Dict
-from submodules.model import User, enums
-from submodules.model.business_objects import user
-from submodules.model.business_objects import general
+from db import User, enums
+from db.business_objects import user
+from db.business_objects import general
 from controller.auth import kratos
-from submodules.model.exceptions import EntityNotFoundException
+from db.exceptions import EntityNotFoundException
 from controller.organization import manager as organization_manager
 
 

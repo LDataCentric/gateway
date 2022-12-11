@@ -7,7 +7,7 @@ from controller.misc import config_service
 from controller.organization import manager as organization_manager
 from controller.user import manager as user_manager
 from graphql_api.types import Organization
-from submodules.model import events
+from db import events
 from graphql_api import types
 from util import doc_ock
 from util import org_generator

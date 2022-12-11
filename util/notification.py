@@ -5,14 +5,14 @@ import requests
 import logging
 
 from controller.notification.notification_data import __notification_data
-from submodules.model import events
+from db import events
 from exceptions import exceptions
 from controller.user.manager import get_or_create_user
-from submodules.model.business_objects import project, general
-from submodules.model.business_objects.notification import get_duplicated, create
-from submodules.model.business_objects.organization import get_organization_id
-from submodules.model.enums import NotificationType
-from submodules.model.models import Notification
+from db.business_objects import project, general
+from db.business_objects.notification import get_duplicated, create
+from db.business_objects.organization import get_organization_id
+from db.enums import NotificationType
+from db.models import Notification
 from util import doc_ock
 
 logging.basicConfig(level=logging.INFO)

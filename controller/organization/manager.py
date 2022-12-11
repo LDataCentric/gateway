@@ -2,10 +2,10 @@ from typing import Any, List, Dict, Optional, Union
 from controller.misc import config_service
 
 from graphql_api.types import UserCountsWrapper
-from submodules.model import enums
-from submodules.model.business_objects import organization, general, user
-from submodules.model.exceptions import EntityAlreadyExistsException
-from submodules.model.models import User as User_model, Organization, User
+from db import enums
+from db.business_objects import organization, general, user
+from db.exceptions import EntityAlreadyExistsException
+from db.models import User as User_model, Organization, User
 
 
 def change_organization(org_id: str, changes: Dict[str, Any]) -> None:

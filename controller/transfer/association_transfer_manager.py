@@ -7,13 +7,13 @@ from util import notification
 
 
 from controller.information_source import manager as information_source_manager
-from submodules.model import enums
-from submodules.model.business_objects import (
+from db import enums
+from db.business_objects import (
     general,
     labeling_task_label,
     record_label_association,
 )
-from submodules.model.models import RecordLabelAssociation
+from db.models import RecordLabelAssociation
 from controller.weak_supervision import weak_supervision_service as weak_supervision
 
 

@@ -1,18 +1,18 @@
 from typing import List, Optional
-from submodules.model.exceptions import EntityNotFoundException
+from db.exceptions import EntityNotFoundException
 from util import notification
 import json
 
 
-from submodules.model import enums, RecordLabelAssociation, Record
-from submodules.model.business_objects import (
+from db import enums, RecordLabelAssociation, Record
+from db.business_objects import (
     record,
     record_label_association,
     labeling_task_label,
     labeling_task,
     general,
 )
-from submodules.model.business_objects.record_label_association import (
+from db.business_objects.record_label_association import (
     check_label_duplication_classification,
     get_project_ids_with_rlas,
     get_labeling_tasks_from_ids,

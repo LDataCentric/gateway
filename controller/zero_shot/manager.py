@@ -11,8 +11,8 @@ from graphql_api.types import (
     ZeroShotNRecords,
 )
 from . import util as zs_service
-from submodules.model import enums
-from submodules.model.business_objects import (
+from db import enums
+from db.business_objects import (
     general,
     record,
     information_source,

@@ -11,8 +11,8 @@ import traceback
 from datetime import datetime
 
 from graphql.error.base import GraphQLError
-from submodules.model import enums, events
-from submodules.model.business_objects import (
+from db import enums, events
+from db.business_objects import (
     attribute,
     information_source,
     embedding,
@@ -24,22 +24,22 @@ from submodules.model.business_objects import (
     project,
     organization,
 )
-from submodules.model.business_objects.embedding import get_embedding_record_ids
-from submodules.model.business_objects.information_source import (
+from db.business_objects.embedding import get_embedding_record_ids
+from db.business_objects.information_source import (
     get_exclusion_record_ids,
 )
-from submodules.model.business_objects.labeling_task_label import (
+from db.business_objects.labeling_task_label import (
     get_classification_labels_manual,
     get_extraction_labels_manual,
     get_label_ids_by_names,
 )
 from controller.embedding import manager
-from submodules.model.business_objects.payload import get_max_token, get
-from submodules.model.business_objects.tokenization import (
+from db.business_objects.payload import get_max_token, get
+from db.business_objects.tokenization import (
     get_doc_bin_progress,
     get_doc_bin_table_to_json,
 )
-from submodules.model.models import (
+from db.models import (
     InformationSource,
     InformationSourceStatisticsExclusion,
     RecordLabelAssociation,
@@ -48,7 +48,7 @@ from submodules.model.models import (
 )
 from controller.auth.manager import get_user_by_info
 from util import daemon, doc_ock, notification
-from submodules.s3 import controller as s3
+from s3 import controller as s3
 from controller.knowledge_base import util as knowledge_base
 from util.notification import create_notification
 from util.miscellaneous_functions import chunk_dict

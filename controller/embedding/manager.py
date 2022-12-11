@@ -1,7 +1,7 @@
 import time
 from typing import Any, Dict, List
 
-from submodules.model import enums
+from db import enums
 from util import daemon
 from . import util
 from . import connector

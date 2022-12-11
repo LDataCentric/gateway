@@ -1,9 +1,9 @@
 import time
 from typing import List, Tuple
 from controller.tokenization.tokenization_service import request_tokenize_project
-from submodules.model.business_objects import attribute, record, tokenization
-from submodules.model.models import Attribute
-from submodules.model.enums import AttributeState, DataTypes
+from db.business_objects import attribute, record, tokenization
+from db.models import Attribute
+from db.enums import AttributeState, DataTypes
 from util import daemon, notification
 
 from . import util

@@ -7,8 +7,8 @@ import graphene
 from controller.auth import manager as auth
 from graphql_api.types import DataSlice, LabelingAccessLink
 from controller.labeling_access_link import manager
-from submodules.model import enums
-from submodules.model.business_objects import (
+from db import enums
+from db.business_objects import (
     information_source as information_source_manager,
     user as user_manager,
 )

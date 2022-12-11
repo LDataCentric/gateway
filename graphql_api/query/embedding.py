@@ -5,7 +5,7 @@ import graphene
 from controller.auth import manager as auth
 from graphql_api import types
 from graphql_api.types import Encoder, LanguageModel, RecordTokenizationTask
-from submodules.model.business_objects import tokenization
+from db.business_objects import tokenization
 from util import spacy_util
 from controller.embedding import manager
 

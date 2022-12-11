@@ -6,7 +6,7 @@ import graphene
 from graphql_api import types
 from controller.auth.manager import get_user_by_info
 from graphql_api.types import InformationSource
-from submodules.model.enums import InformationSourceType
+from db.enums import InformationSourceType
 from util import notification
 
 

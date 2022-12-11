@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 from controller.auth import manager as auth
 import graphene
-from submodules.model import enums
+from db import enums
 from controller.labeling_access_link import manager
 from graphql_api.types import LabelingAccessLink
 from util import notification

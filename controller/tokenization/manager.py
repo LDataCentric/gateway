@@ -4,9 +4,9 @@ import spacy
 from spacy.tokens import DocBin
 from controller.project import manager as project_manager
 from graphql_api.types import TokenizedRecord, TokenizedAttribute, TokenWrapper
-from submodules.model import enums, Record
-from submodules.model.business_objects import tokenization, attribute
-from submodules.model.business_objects.record import __get_tokenized_record
+from db import enums, Record
+from db.business_objects import tokenization, attribute
+from db.business_objects.record import __get_tokenized_record
 from util import daemon
 from controller.tokenization import tokenization_service
 from controller.tokenization.tokenization_service import (

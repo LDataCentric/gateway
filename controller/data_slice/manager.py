@@ -1,12 +1,12 @@
 from typing import Dict, Any, List, Optional
 
-from submodules.model import DataSlice
-from submodules.model import enums
-from submodules.model.business_objects import general, data_slice, embedding
+from db import DataSlice
+from db import enums
+from db.business_objects import general, data_slice, embedding
 import uuid
 from service.search import search
 from controller.data_slice import neural_search_connector
-from submodules.model.enums import SliceTypes
+from db.enums import SliceTypes
 from controller.labeling_access_link import manager as link_manager
 
 

@@ -8,8 +8,8 @@ from graphql import GraphQLError
 from controller.project import manager as project_manager
 from controller.user import manager as user_manager
 from controller.organization import manager as organization_manager
-from submodules.model import enums, exceptions
-from submodules.model.models import Organization, Project, User
+from db import enums, exceptions
+from db.models import Organization, Project, User
 from controller.misc import manager as misc_manager
 import sqlalchemy
 

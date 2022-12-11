@@ -5,9 +5,9 @@ from typing import Tuple, Dict, List, Any, Optional, Union
 from exceptions.exceptions import TooManyRecordsForStaticSliceException
 from graphql_api import types
 from graphql_api.types import ExtendedSearch
-from submodules.model import UserSessions
+from db import UserSessions
 from util.notification import create_notification
-from submodules.model.enums import (
+from db.enums import (
     NotificationType,
     SliceTypes,
     Tablenames,
@@ -28,7 +28,7 @@ from .search_helper import (
 )
 
 
-from submodules.model.business_objects import (
+from db.business_objects import (
     attribute,
     data_slice,
     general,

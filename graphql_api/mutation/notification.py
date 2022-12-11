@@ -1,6 +1,6 @@
 import graphene
 
-from submodules.model import enums
+from db import enums
 from controller.auth import manager as auth
 from util.notification import create_notification
 

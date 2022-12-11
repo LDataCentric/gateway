@@ -3,8 +3,8 @@ from typing import Dict, List, Optional
 
 from controller.transfer import project_transfer_manager as handler
 from controller.labeling_access_link import manager as link_manager
-from submodules.model import Project, enums
-from submodules.model.business_objects import (
+from db import Project, enums
+from db.business_objects import (
     labeling_task,
     organization,
     project,
@@ -14,12 +14,12 @@ from submodules.model.business_objects import (
 from graphql_api.types import HuddleData, ProjectSize
 from util import daemon
 from controller.tokenization.tokenization_service import request_tokenize_project
-from submodules.model.business_objects import data_slice as ds_manager
-from submodules.model.business_objects import (
+from db.business_objects import data_slice as ds_manager
+from db.business_objects import (
     information_source as information_source_manager,
 )
-from submodules.model.business_objects import util as db_util
-from submodules.s3 import controller as s3
+from db.business_objects import util as db_util
+from s3 import controller as s3
 from service.search import search
 
 

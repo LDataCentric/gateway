@@ -6,9 +6,9 @@ import docker
 from controller.tokenization import manager as tokenization_manager
 import pickle
 import tarfile
-from submodules.model.business_objects import attribute, tokenization
-from submodules.model.business_objects import record
-from submodules.model.business_objects.record import __get_tokenized_record
+from db.business_objects import attribute, tokenization
+from db.business_objects import record
+from db.business_objects.record import __get_tokenized_record
 import time
 import uuid
 

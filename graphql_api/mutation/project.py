@@ -5,7 +5,7 @@ import graphene
 from controller.auth import manager as auth
 from graphql_api import types
 from graphql_api.types import Project
-from submodules.model import enums, events
+from db import enums, events
 from controller.project import manager
 from util import doc_ock, notification
 

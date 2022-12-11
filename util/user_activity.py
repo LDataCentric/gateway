@@ -1,7 +1,7 @@
 import time
 from typing import Dict, Union, Any, List
 from graphql_api.types import UserActivityWrapper
-from submodules.model.business_objects import user_activity
+from db.business_objects import user_activity
 from util import daemon
 import os
 from datetime import datetime

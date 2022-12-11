@@ -1,5 +1,5 @@
-from submodules.model import LabelingTask
-from submodules.model.enums import InformationSourceReturnType, LabelingTaskType
+from db import LabelingTask
+from db.enums import InformationSourceReturnType, LabelingTaskType
 
 
 def resolve_source_return_type(labeling_task: LabelingTask) -> str:

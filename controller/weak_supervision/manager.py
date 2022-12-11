@@ -1,9 +1,9 @@
 import timeit
 from typing import Any, Tuple, Optional
 
-from submodules.model import enums, WeakSupervisionTask
-from submodules.model.business_objects import labeling_task
-from submodules.model.business_objects import weak_supervision
+from db import enums, WeakSupervisionTask
+from db.business_objects import labeling_task
+from db.business_objects import weak_supervision
 from controller.weak_supervision.weak_supervision_service import (
     initiate_weak_supervision,
 )

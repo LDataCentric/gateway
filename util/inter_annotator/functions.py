@@ -3,10 +3,10 @@ from typing import Dict, Any
 from graphql_api import (
     types,
 )  # here we have to used types. because otherwise import does not work properly
-from submodules.model import models
-from submodules.model.business_objects import data_slice
-from submodules.model import enums
-from submodules.model.business_objects.inter_annotator import (
+from db import models
+from db.business_objects import data_slice
+from db import enums
+from db.business_objects.inter_annotator import (
     check_inter_annotator_classification_records_only_used_once,
     get_current_inter_annotator_classification_users,
     get_all_inter_annotator_classification_users,

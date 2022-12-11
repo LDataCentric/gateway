@@ -1,9 +1,9 @@
 from typing import List
 
-from submodules.model import KnowledgeBase
-from submodules.model.enums import NotificationType
-from submodules.model.exceptions import EntityAlreadyExistsException
-from submodules.model.business_objects import knowledge_base, general
+from db import KnowledgeBase
+from db.enums import NotificationType
+from db.exceptions import EntityAlreadyExistsException
+from db.business_objects import knowledge_base, general
 from util.notification import create_notification
 from . import util
 

@@ -4,8 +4,8 @@ from graphql_api.types import (
     LabelingFunctionSampleRecordWrapper,
     LabelingFunctionSampleRecords,
 )
-from submodules.model import InformationSourcePayload, enums
-from submodules.model.business_objects import information_source, payload
+from db import InformationSourcePayload, enums
+from db.business_objects import information_source, payload
 
 
 def get_payload(project_id: str, payload_id: str) -> InformationSourcePayload:

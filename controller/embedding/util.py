@@ -1,4 +1,4 @@
-from submodules.model.business_objects import embedding
+from db.business_objects import embedding
 
 
 def has_encoder_running(project_id: str) -> bool:

@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from submodules.model import Organization
+from db import Organization
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import NullPool
@@ -10,7 +10,7 @@ from sqlalchemy.pool import NullPool
 @pytest.fixture
 def db_session(postgresql):
     """Session for SQLAlchemy."""
-    from submodules.model.models import Base
+    from db.models import Base
 
     connection = f"postgresql+psycopg2://{postgresql.info.user}:@{postgresql.info.host}:{postgresql.info.port}/{postgresql.info.dbname}"
 

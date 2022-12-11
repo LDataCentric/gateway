@@ -4,8 +4,8 @@ import graphene
 
 from controller.auth import manager as auth
 from graphql_api.types import Notification
-from submodules.model.enums import NotificationType
-from submodules.model.business_objects.notification import (
+from db.enums import NotificationType
+from db.business_objects.notification import (
     get_notifications_by_user_id,
     get_filtered_notification,
 )

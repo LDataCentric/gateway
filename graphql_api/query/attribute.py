@@ -3,7 +3,7 @@ from typing import List
 
 from controller.auth import manager as auth
 from controller.attribute import manager
-from submodules.model.enums import NotificationType
+from db.enums import NotificationType
 from graphql_api.types import Attribute, UserAttributeSampleRecordsResult
 from util.notification import create_notification
 

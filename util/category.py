@@ -1,4 +1,4 @@
-from submodules.model import enums
+from db import enums
 import pandas as pd
 import json
 

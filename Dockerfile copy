@@ -1,5 +1,5 @@
 # `python-base` sets up all our shared environment variables
-FROM python:3.9-slim
+FROM python:3.9-slim as python-base
 
     # python
 ENV PYTHONUNBUFFERED=1 \
@@ -30,6 +30,8 @@ ENV PYTHONUNBUFFERED=1 \
 # prepend poetry and venv to path
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+# `builder-base` stage is used to build deps + create our virtual environment
+FROM python-base as builder-base
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         # deps for installing poetry
@@ -47,11 +49,20 @@ COPY poetry.lock pyproject.toml ./
 # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
 RUN poetry install --without dev
 RUN poetry add "git+https://github.com/LDataCentric/db.git@library"
-RUN poetry add "git+https://github.com/LDataCentric/s3.git@library"
+
+
+FROM python:3.9-slim
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y libpq-dev
+
+COPY --from=builder-base /opt/pysetup/.venv  /opt/.venv
 
 WORKDIR /app
 
-ENV PATH="/opt/pysetup/.venv/bin:$PATH"
+ENV PATH="/opt/.venv/bin:$PATH"
+
+# COPY requirements.txt .
 
 # RUN pip3 install -r requirements.txt
 RUN python3 -m spacy download en_core_web_sm
@@ -69,6 +80,7 @@ RUN python3 -m spacy download en_core_web_sm
 # RUN python3 -m spacy download es_core_news_sm
 # RUN python3 -m spacy download xx_ent_wiki_sm
 
+
 COPY / .
 
-CMD [ "uvicorn", "--host", "0.0.0.0", "--port", "80", "app:app" ]
+CMD [ "/usr/local/bin/uvicorn", "--host", "0.0.0.0", "--port", "80", "app:app" ]

@@ -6,8 +6,9 @@ import re
 from typing import Dict, Any, List, Optional
 from zipfile import ZipFile
 
-from submodules.model import enums, UploadTask, Project
-from submodules.model.business_objects import (
+from db import enums
+from db.models import UploadTask, Project
+from db.business_objects import (
     organization,
     project,
     attribute,
@@ -25,13 +26,13 @@ from submodules.model.business_objects import (
     weak_supervision,
     comments as comment,
 )
-from submodules.model.enums import NotificationType
+from db.enums import NotificationType
 from controller.labeling_access_link import manager as link_manager
 from util import notification
 from util.decorator import param_throttle
 from controller.embedding import manager as embedding_manager
 from util.notification import create_notification
-from submodules.s3 import controller as s3
+from s3 import controller as s3
 import os
 import numpy as np
 

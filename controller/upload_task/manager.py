@@ -4,8 +4,8 @@ from typing import Optional
 from controller.transfer.util import (
     get_upload_task_message as get_upload_task_message_orig,
 )
-from submodules.model import UploadTask, enums
-from submodules.model.business_objects import upload_task, general
+from db import UploadTask, enums
+from db.business_objects import upload_task, general
 from util import notification
 
 logger = logging.getLogger(__name__)

@@ -1,16 +1,16 @@
 import datetime
 from typing import List, Dict, Tuple, Union, Optional
 
-from submodules.model import enums
+from db import enums
 from .checks import check_argument_allowed, run_checks, run_limit_checks
-from submodules.model.models import UploadTask, Attribute
+from db.models import UploadTask, Attribute
 import pandas as pd
 from util.notification import create_notification
-from submodules.model.enums import NotificationType
+from db.enums import NotificationType
 import os
 import logging
 import traceback
-from submodules.model.business_objects import export
+from db.business_objects import export
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
