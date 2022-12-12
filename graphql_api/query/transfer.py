@@ -4,6 +4,7 @@ import graphene
 
 from controller.auth import manager as auth
 from controller.transfer import manager as upload_manager
+from starlette.responses import PlainTextResponse, JSONResponse, FileResponse
 
 
 class TransferQuery(graphene.ObjectType):
@@ -20,6 +21,7 @@ class TransferQuery(graphene.ObjectType):
         graphene.JSONString,
         project_id=graphene.ID(required=True),
         session_id=graphene.ID(required=False),
+        export_as_csv=graphene.Boolean(required=False),
     )
 
     export_project = graphene.Field(
@@ -69,11 +71,11 @@ class TransferQuery(graphene.ObjectType):
         )
 
     def resolve_export(
-        self, info, project_id: str, session_id: Optional[str] = None
+        self, info, project_id: str, session_id: Optional[str] = None, export_as_csv: Optional[str] = True
     ) -> str:
         auth.check_demo_access(info)
         auth.check_project_access(info, project_id)
-        return upload_manager.export_records(project_id, None, session_id)
+        return upload_manager.export_records(project_id, None, session_id, export_as_csv)
 
     def resolve_export_knowledge_base(self, info, project_id: str, list_id: str) -> str:
         auth.check_demo_access(info)

@@ -102,6 +102,7 @@ def export_records(
     project_id: str,
     num_samples: Optional[int] = None,
     user_session_id: Optional[str] = None,
+    export_as_csv: bool = True,
 ) -> str:
     attributes = attribute.get_all_ordered(project_id, True)
     if not attributes:
@@ -113,7 +114,7 @@ def export_records(
     sql_df = pd.read_sql(sql_text(final_sql), con=general.get_bind())
     if num_samples is not None:
         sql_df = sql_df.head(int(num_samples))
-    export_as_csv = False
+
     if export_as_csv:
         return sql_df.to_csv(index=False)
     else:

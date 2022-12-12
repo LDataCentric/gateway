@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 import graphene
 from graphql import GraphQLError
 
@@ -68,11 +68,10 @@ class CreateOrganization(graphene.Mutation):
 
     organization = graphene.Field(lambda: Organization)
 
-    def mutate(self, info, name: str == None):
+    def mutate(self, info, name: Optional[str] = None):
         if config_service.get_config_value("is_managed"):
             auth.check_admin_access(info)
-        else:
-            if not organization_manager.can_create_local():
+        elif not organization_manager.can_create_local():
                 auth.check_admin_access(info)
 
         if not name:
