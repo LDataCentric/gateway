@@ -23,5 +23,22 @@ class CreatePayload(graphene.Mutation):
         return CreatePayload(payload)
 
 
+class TrainAllModels(graphene.Mutation):
+    class Arguments:
+        project_id = graphene.ID()
+
+    payload = graphene.List(InformationSourcePayload)
+
+    def mutate(self, info, project_id: str, asynchronous: bool = False):
+        auth.check_demo_access(info)
+        auth.check_project_access(info, project_id)
+        user = get_user_by_info(info)
+        payload = manager.train_all_models(
+            info, project_id, user.id, asynchronous
+        )
+        return TrainAllModels(payload)
+
+
 class PayloadMutation(graphene.ObjectType):
     create_payload = CreatePayload.Field()
+    train_all_models = TrainAllModels.Field()

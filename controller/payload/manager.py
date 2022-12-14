@@ -17,12 +17,30 @@ def create_payload(
     project_id: str,
     information_source_id: str,
     user_id: str,
-    asynchronous: Optional[bool] = True,
+    asynchronous: bool = True,
 ) -> InformationSourcePayload:
     return payload_scheduler.create_payload(
         info, project_id, information_source_id, user_id, asynchronous
     )
 
+def train_all_models(
+    info,
+    project_id: str,
+    user_id: str,
+    asynchronous: bool = False,
+) -> List[InformationSourcePayload]:
+
+    # Get all information sources
+    information_source_ids = information_source.get_all(project_id)
+
+    output = []
+    for _information_source in information_source_ids:
+        payload = payload_scheduler.create_payload(
+            info, project_id, str(_information_source.id), user_id, asynchronous
+        )
+        output.append(payload)
+
+    return output
 
 def create_empty_crowd_payload(
     project_id: str, information_source_id: str, user_id: str
